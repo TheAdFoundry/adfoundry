@@ -11,7 +11,7 @@ export default function ContactPage() {
     name: "",
     email: "",
     company: "",
-    service: [] as string[],
+    service: [] as string[], // Kept as "service" but initialized as an array
     message: "",
   })
 
@@ -21,16 +21,14 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
+    // Validation to ensure at least one service is selected
     if (formData.service.length === 0) {
       setError("Please select at least one service.")
       return
     }
-
     setIsSubmitting(true)
     setError(null)
 
-    // Securely loaded from .env
     const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || ""
     const templateIdToAdmin =
       process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID_ADMIN || ""
@@ -38,18 +36,23 @@ export default function ContactPage() {
       process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID_USER || ""
     const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
 
+    // Prepare data for EmailJS: join the array into a single string
     const emailData = {
       ...formData,
       service: formData.service.join(", "),
     }
 
     try {
+      // Send email to admin
       await emailjs.send(serviceId, templateIdToAdmin, emailData, publicKey)
+
+      // Send confirmation email to the user
       await emailjs.send(serviceId, templateIdToUser, emailData, publicKey)
 
       setIsSubmitting(false)
       setIsSubmitted(true)
 
+      // Reset form after a delay
       setTimeout(() => {
         setIsSubmitted(false)
         setFormData({
@@ -74,18 +77,24 @@ export default function ContactPage() {
   ) => {
     const { name, value, type } = e.target
 
+    // Handle checkbox changes for the 'service' field
     if (type === "checkbox" && name === "service") {
       const { checked } = e.target as HTMLInputElement
-      setFormData(prev => {
-        const current = prev.service
-        return {
-          ...prev,
-          service: checked
-            ? [...current, value]
-            : current.filter(item => item !== value),
+      setFormData(prevFormData => {
+        const currentServices = prevFormData.service
+        if (checked) {
+          // Add the service to the array if checked
+          return { ...prevFormData, service: [...currentServices, value] }
+        } else {
+          // Remove the service from the array if unchecked
+          return {
+            ...prevFormData,
+            service: currentServices.filter(item => item !== value),
+          }
         }
       })
     } else {
+      // Handle other input fields
       setFormData({
         ...formData,
         [name]: value,
@@ -104,6 +113,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-ivory via-orange-50 to-orange-100 text-black">
+      {/* Hero Section */}
       <section className="pt-32 pb-20">
         <div className="container mx-auto px-6">
           <motion.div
@@ -209,6 +219,7 @@ export default function ContactPage() {
                     </div>
                   </div>
 
+                  {/* Services Checkboxes */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Services Interested In *
@@ -282,9 +293,142 @@ export default function ContactPage() {
               )}
             </motion.div>
 
-            {/* Sidebar content skipped for brevity */}
+            {/* Contact Information */}
+            <motion.div
+              className="space-y-8"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+            >
+              {/* Contact Cards */}
+              <div className="space-y-6">
+                <motion.div
+                  className="bg-white border border-orange-200 rounded-2xl p-6 hover:border-orange-400 shadow-lg hover:shadow-xl transition-all duration-300"
+                  whileHover={{ scale: 1.02, y: -2 }}
+                >
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mr-4">
+                      <Mail className="w-6 h-6 text-black" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-orange-400">
+                        Email Us
+                      </h3>
+                      <p className="text-gray-400">Get in touch directly</p>
+                    </div>
+                  </div>
+                  <a
+                    href="mailto:theadfoundryinfo@gmail.com"
+                    className="text-gray-700 hover:text-orange-600 transition-colors duration-300 text-lg"
+                  >
+                    theadfoundryinfo@gmail.com
+                  </a>
+                </motion.div>
+
+                <motion.div
+                  className="bg-white border border-orange-200 rounded-2xl p-6 hover:border-orange-400 shadow-lg hover:shadow-xl transition-all duration-300"
+                  whileHover={{ scale: 1.02, y: -2 }}
+                >
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mr-4">
+                      <Instagram className="w-6 h-6 text-black" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-orange-400">
+                        Follow Us
+                      </h3>
+                      <p className="text-gray-400">See our latest work</p>
+                    </div>
+                  </div>
+                  <a
+                    href="https://instagram.com/theadfoundry"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-700 hover:text-orange-600 transition-colors duration-300 text-lg"
+                  >
+                    @theadfoundry
+                  </a>
+                </motion.div>
+
+                <motion.div
+                  className="bg-white border border-orange-200 rounded-2xl p-6 hover:border-orange-400 shadow-lg hover:shadow-xl transition-all duration-300"
+                  whileHover={{ scale: 1.02, y: -2 }}
+                >
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mr-4">
+                      <Clock className="w-6 h-6 text-black" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-orange-400">
+                        Response Time
+                      </h3>
+                      <p className="text-gray-400">We're quick to respond</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 text-lg">Within 24 hours</p>
+                </motion.div>
+              </div>
+
+              {/* What Happens Next */}
+              <motion.div
+                className="bg-white border border-orange-200 rounded-2xl p-8 shadow-lg"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8, duration: 0.8 }}
+              >
+                <h3 className="text-2xl font-bold mb-6 text-orange-400">
+                  What Happens Next?
+                </h3>
+                <div className="space-y-4">
+                  {[
+                    "We'll review your project details within 24 hours",
+                    "Schedule a discovery call to understand your vision",
+                    "Create a customized proposal tailored to your needs",
+                    "Begin crafting your unique brand story",
+                  ].map((step, index) => (
+                    <motion.div
+                      key={index}
+                      className="flex items-center"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 1 + index * 0.1 }}
+                    >
+                      <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                        <span className="text-white font-bold text-sm">
+                          {index + 1}
+                        </span>
+                      </div>
+                      <p className="text-gray-600">{step}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
+
+        {/* Floating elements */}
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-orange-400/20 rounded-full"
+            style={{
+              left: `${10 + Math.random() * 80}%`,
+              top: `${20 + Math.random() * 60}%`,
+            }}
+            animate={{
+              y: [0, -25, 0],
+              opacity: [0.2, 0.6, 0.2],
+              scale: [1, 1.3, 1],
+            }}
+            transition={{
+              duration: 3 + Math.random() * 2,
+              repeat: Number.POSITIVE_INFINITY,
+              delay: Math.random() * 2,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
       </section>
     </div>
   )

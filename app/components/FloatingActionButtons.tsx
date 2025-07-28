@@ -12,7 +12,7 @@ export const FloatingActionButtons = () => {
     <div className="fixed bottom-5 left-5 z-50 flex flex-col items-center gap-6 md:left-auto md:right-5">
       {/* WhatsApp Button */}
       <a
-        href="https://wa.me/+91 9550771823"
+        href="https://wa.me/+916305703009"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
@@ -24,7 +24,7 @@ export const FloatingActionButtons = () => {
 
       {/* Phone Button */}
       <a
-        href="tel:+91 9550771823"
+        href="tel:+916305703009"
         aria-label="Call us"
         className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 text-white"
         style={{ ...animationStyle, animationDelay: "1s" }}

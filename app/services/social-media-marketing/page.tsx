@@ -45,11 +45,6 @@ const platforms = [
     color: "from-blue-600 to-blue-700",
   },
   {
-    name: "TikTok",
-    description: "Creative short-form video content for younger audiences",
-    color: "from-black to-gray-800",
-  },
-  {
     name: "Twitter",
     description: "Real-time engagement and thought leadership content",
     color: "from-blue-400 to-blue-500",
